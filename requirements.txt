@@ -1,0 +1,19 @@
+fastapi==0.109.2
+uvicorn==0.27.1
+sqlalchemy==2.0.27
+pydantic==2.6.1
+python-dotenv==1.0.1
+requests==2.31.0
+praw==7.7.1  # Reddit API wrapper
+tweepy==4.14.0  # Twitter API wrapper
+python-jose[cryptography]==3.3.0  # For JWT tokens
+passlib[bcrypt]==1.7.4  # For password hashing
+python-multipart==0.0.6
+alembic==1.13.1
+psycopg2-binary==2.9.9  # PostgreSQL adapter
+transformers==4.37.2  # For sentiment analysis
+apscheduler==3.10.4
+pydantic-settings==2.1.0
+openai==1.12.0
+tenacity==8.2.3
+email-validator==2.1.0.post1 

@@ -16,11 +16,12 @@ class SentimentType(str, enum.Enum):
     NEUTRAL = "neutral"
 
 class CategoryType(str, enum.Enum):
-    BUG_REPORT = "bug_report"
-    FEATURE_REQUEST = "feature_request"
-    COMPLAINT = "complaint"
-    DISCUSSION = "discussion"
-    FEEDBACK = "feedback"
+    BUG_REPORTS = "bug_reports"
+    FEATURE_REQUESTS = "feature_requests"
+    GENERAL_FEEDBACK = "general_feedback"
+    QUESTIONS = "questions"
+    PRAISE = "praise"
+    ISSUES = "issues"
 
 class Post(Base):
     __tablename__ = "posts"

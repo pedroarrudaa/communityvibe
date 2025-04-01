@@ -38,9 +38,10 @@ class OpenAIService:
         self.supported_categories = [
             "Bug Reports",
             "Feature Requests",
-            "Complaints",
-            "Discussions",
-            "Feedback"
+            "General Feedback",
+            "Questions",
+            "Praise",
+            "Issues"
         ]
 
     @retry(
@@ -260,56 +261,33 @@ class OpenAIService:
 
     def _create_categorization_prompt(self, content: str, categories: List[str], products: Optional[List[str]] = None) -> str:
         """Create prompt for content categorization"""
-        categories = self.supported_categories
-        if products:
-            return (
-                "You are a content categorization expert. Your task is to categorize the content into the following categories:\n"
-                f"{', '.join(categories)}\n\n"
-                "A single post or product mention can belong to multiple categories. "
-                "You must respond with ONLY a valid JSON object and no other text.\n\n"
-                f"Content: {content}\n"
-                f"Products mentioned: {', '.join(products)}\n\n"
-                "Required JSON format:\n"
-                "{\n"
-                '    "overall_categories": [\n'
-                '        {\n'
-                '            "category": "category_name",\n'
-                '            "confidence": 0.9,\n'
-                '            "explanation": "Why this category applies"\n'
-                '        }\n'
-                "    ],\n"
-                '    "product_categories": {\n'
-                '        "product_name": {\n'
-                '            "categories": [\n'
-                '                {\n'
-                '                    "category": "category_name",\n'
-                '                    "confidence": 0.9,\n'
-                '                    "context": "Context of why this category applies to this product mention"\n'
-                '                }\n'
-                "            ]\n"
-                "        }\n"
-                "    },\n"
-                '    "confidence": 0.9,\n'
-                '    "explanation": "Brief explanation"\n'
-                "}"
-            )
-        else:
-            return (
-                "You are a content categorization expert. Your task is to categorize the content into the following categories:\n"
-                f"{', '.join(categories)}\n\n"
-                "Content can belong to multiple categories. "
-                "You must respond with ONLY a valid JSON object and no other text.\n\n"
-                f"Content: {content}\n\n"
-                "Required JSON format:\n"
-                "{\n"
-                '    "categories": [\n'
-                '        {\n'
-                '            "category": "category_name",\n'
-                '            "confidence": 0.9,\n'
-                '            "explanation": "Why this category applies"\n'
-                '        }\n'
-                "    ],\n"
-                '    "confidence": 0.9,\n'
-                '    "explanation": "Brief explanation"\n'
-                "}"
-            ) 
+        category_descriptions = {
+            "Bug Reports": "Identifies specific technical issues or malfunctions in the tool",
+            "Feature Requests": "Suggestions for new functionalities or improvements",
+            "General Feedback": "Comments or opinions that don't fit neatly into other categories",
+            "Questions": "User inquiries or requests for clarification",
+            "Praise": "Positive feedback or testimonials",
+            "Issues": "Problems that aren't bugs but need attention"
+        }
+        
+        categories_info = "\n".join([f"- {cat}: {category_descriptions.get(cat, '')}" for cat in categories])
+        
+        return (
+            "You are a content categorization expert. Your task is to categorize the given content "
+            "into the most appropriate category. You must respond with ONLY a valid JSON object and no other text.\n\n"
+            f"Content: {content}\n\n"
+            "Available categories with descriptions:\n"
+            f"{categories_info}\n\n"
+            f"Products mentioned: {', '.join(products) if products else 'None'}\n\n"
+            "Required JSON format:\n"
+            "{\n"
+            '    "category": "Category name",\n'
+            '    "confidence": 0.9,\n'
+            '    "explanation": "Brief explanation of why this category was chosen",\n'
+            '    "secondary_categories": ["Category1", "Category2"],\n'
+            '    "keywords": ["keyword1", "keyword2"],\n'
+            '    "product_context": {\n'
+            '        "product_name": "Category specific to this product"\n'
+            "    }\n"
+            "}"
+        ) 

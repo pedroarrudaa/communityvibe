@@ -1,4 +1,4 @@
-run = "uvicorn app.main:app --host 0.0.0.0 --port 8080"
+run = "python -m uvicorn app.main:app --host 0.0.0.0 --port 8080"
 hidden = [".config", "package-lock.json", "venv"]
 modules = ["python-3.10:v18-20230807-322e88b"]
 
@@ -6,5 +6,5 @@ modules = ["python-3.10:v18-20230807-322e88b"]
 channel = "stable-22_11"
 
 [deployment]
-run = ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port 8080"]
+run = ["sh", "-c", "python -m uvicorn app.main:app --host 0.0.0.0 --port 8080"]
 deploymentTarget = "cloudrun" 

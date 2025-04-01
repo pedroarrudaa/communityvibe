@@ -16,8 +16,13 @@ def fetch_reddit_posts():
     try:
         db = SessionLocal()
         reddit_service = RedditService()
-        result = reddit_service.fetch_posts(db, limit=settings.REDDIT_POSTS_PER_FETCH)
-        logger.info(f"Reddit posts fetched: {result}")
+        # Fetch from multiple subreddits
+        subreddits = ["programming", "technology", "coding"]
+        all_posts = []
+        for subreddit in subreddits:
+            posts = reddit_service.fetch_subreddit_posts(subreddit, limit=settings.REDDIT_POSTS_PER_FETCH)
+            all_posts.extend(posts)
+        logger.info(f"Reddit posts fetched: {len(all_posts)} posts from {len(subreddits)} subreddits")
     except Exception as e:
         logger.error(f"Error fetching Reddit posts: {str(e)}")
     finally:
@@ -28,8 +33,13 @@ def fetch_twitter_posts():
     try:
         db = SessionLocal()
         twitter_service = TwitterService()
-        result = twitter_service.fetch_posts(db, limit=settings.TWITTER_POSTS_PER_FETCH)
-        logger.info(f"Twitter posts fetched: {result}")
+        # Search for relevant tech-related queries
+        queries = ["#programming", "#coding", "#technology"]
+        all_posts = []
+        for query in queries:
+            posts = twitter_service.search_tweets(query, limit=settings.TWITTER_POSTS_PER_FETCH)
+            all_posts.extend(posts)
+        logger.info(f"Twitter posts fetched: {len(all_posts)} posts from {len(queries)} queries")
     except Exception as e:
         logger.error(f"Error fetching Twitter posts: {str(e)}")
     finally:
